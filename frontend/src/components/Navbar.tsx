@@ -71,16 +71,23 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav Links */}
-            <nav className="hidden lg:flex items-center gap-2">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href} 
-                  className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-navy-slate hover:text-gold hover:bg-navy-slate/5 transition-all duration-200 tracking-widest uppercase"
-                >
-                  {link.name}
-                </Link>
-              ))}
+            <nav className="hidden lg:flex items-center gap-1.5">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link 
+                    key={link.name} 
+                    href={link.href} 
+                    className={`px-3.5 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all duration-200 ${
+                      isActive 
+                        ? 'text-gold bg-gold/10 border border-gold/10' 
+                        : 'text-navy-slate hover:text-gold hover:bg-navy-slate/5 border border-transparent'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Actions */}
@@ -156,7 +163,7 @@ export default function Navbar() {
               ) : (
                 <button
                   onClick={() => setLoginOpen(true)}
-                  className="px-4 py-2 rounded-full bg-gold hover:bg-gold-hover text-xs font-black text-navy transition-colors tracking-widest uppercase shadow-md cursor-pointer"
+                  className="btn-gold px-5 py-2.5 text-xs uppercase tracking-widest cursor-pointer"
                 >
                   Sign In
                 </button>
@@ -229,7 +236,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => { setMobileMenuOpen(false); setLoginOpen(true); }}
-                className="w-full py-2.5 rounded-lg border border-gold/20 text-xs font-bold text-gold text-center"
+                className="w-full btn-gold py-2.5 text-xs text-center cursor-pointer"
               >
                 Sign In
               </button>

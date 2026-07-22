@@ -73,11 +73,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const hasResults = results.services.length > 0 || results.templates.length > 0 || results.blogs.length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center p-4 bg-navy-dark/95 backdrop-blur-lg">
-      <div className="w-full max-w-2xl mt-10 md:mt-20 overflow-hidden flex flex-col h-[70vh] rounded-2xl border border-gold/15 bg-navy-light/95 shadow-2xl p-6">
+    <div className="fixed inset-0 z-50 flex justify-center p-4 bg-navy-dark/40 backdrop-blur-md">
+      <div className="w-full max-w-2xl mt-10 md:mt-20 overflow-hidden flex flex-col h-[70vh] rounded-3xl border border-navy-slate/10 bg-white shadow-2xl p-6 animate-fade-in">
         
         {/* Search Header */}
-        <div className="flex items-center gap-3 border-b border-navy-slate/10 pb-4 mb-4">
+        <div className="flex items-center gap-3 border-b border-navy-slate/10 pb-4 mb-4 bg-white">
           <Search className="w-5 h-5 text-gold shrink-0" />
           <input
             ref={inputRef}
@@ -85,31 +85,31 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             placeholder="Search services, templates, blogs, or industries..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent text-light-gray placeholder-navy-slate text-base focus:outline-none"
+            className="w-full bg-transparent text-navy placeholder-navy-slate/50 text-base focus:outline-none"
           />
-          <button onClick={onClose} className="text-navy-slate hover:text-gold transition-colors">
+          <button onClick={onClose} className="text-navy-slate hover:text-gold transition-colors p-1 rounded-lg hover:bg-slate-50">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Results Body */}
-        <div className="flex-1 overflow-y-auto pr-1 space-y-6">
+        <div className="flex-1 overflow-y-auto pr-1 space-y-6 scrollbar-hide">
           {loading ? (
             <div className="space-y-4 py-8">
-              <div className="skeleton-box h-10 w-full rounded" />
-              <div className="skeleton-box h-8 w-2/3 rounded" />
-              <div className="skeleton-box h-8 w-1/2 rounded" />
+              <div className="shimmer-loading h-10 w-full rounded-xl" />
+              <div className="shimmer-loading h-8 w-2/3 rounded-xl" />
+              <div className="shimmer-loading h-8 w-1/2 rounded-xl" />
             </div>
           ) : query.trim() === '' ? (
             <div className="text-center py-12 text-navy-slate text-sm">
               <Search className="w-8 h-8 text-gold/30 mx-auto mb-2" />
-              <p>Type a keyword to discover services and templates</p>
+              <p className="font-bold">Type a keyword to discover services and templates</p>
               <div className="flex flex-wrap justify-center gap-2 mt-4 max-w-sm mx-auto">
                 {['CRM', 'Next.js', 'E-commerce', 'AI Chatbot', 'Restaurant'].map((kw) => (
                   <button
                     key={kw}
                     onClick={() => setQuery(kw)}
-                    className="px-2.5 py-1 rounded bg-navy text-xs hover:border-gold/30 hover:bg-navy-dark border border-navy-slate/10 transition-all"
+                    className="px-3 py-1.5 rounded-lg bg-slate-50 text-navy hover:text-gold border border-navy-slate/10 hover:border-gold/30 text-xs font-bold transition-all cursor-pointer"
                   >
                     {kw}
                   </button>
@@ -118,10 +118,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </div>
           ) : !hasResults ? (
             <div className="text-center py-12 text-navy-slate text-sm">
-              <p>No results found matching "{query}"</p>
+              <p className="font-bold">No results found matching &quot;{query}&quot;</p>
               <button 
                 onClick={() => navigateTo('/contact')}
-                className="mt-4 text-xs font-bold text-gold underline hover:text-gold-hover transition-colors"
+                className="mt-4 text-xs font-black text-gold underline hover:text-gold-hover transition-colors"
               >
                 Inquire for custom solution
               </button>
@@ -131,21 +131,21 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* Services Results */}
               {results.services.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2 flex items-center gap-1.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2.5 flex items-center gap-1.5">
                     <Server className="w-3.5 h-3.5" /> Services
                   </h3>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {results.services.map((s) => (
                       <div
                         key={s.id}
                         onClick={() => navigateTo(`/services/${s.slug}`)}
-                        className="p-3 rounded-lg bg-navy/40 hover:bg-navy border border-transparent hover:border-gold/10 cursor-pointer flex justify-between items-center transition-all group"
+                        className="p-3.5 rounded-xl bg-slate-50 hover:bg-gold/5 border border-navy-slate/5 hover:border-gold/15 cursor-pointer flex justify-between items-center transition-all group"
                       >
                         <div>
-                          <span className="text-sm font-semibold text-light-gray group-hover:text-gold transition-colors">{s.title}</span>
-                          <span className="text-xs text-navy-slate block line-clamp-1">{s.shortDesc}</span>
+                          <span className="text-sm font-bold text-navy group-hover:text-gold transition-colors">{s.title}</span>
+                          <span className="text-xs text-navy-slate block line-clamp-1 mt-0.5">{s.shortDesc}</span>
                         </div>
-                        <span className="text-xs font-semibold text-gold">From ${s.priceFrom}</span>
+                        <span className="text-xs font-black text-gold">From ${s.priceFrom}</span>
                       </div>
                     ))}
                   </div>
@@ -155,21 +155,21 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* Templates Results */}
               {results.templates.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2 flex items-center gap-1.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2.5 flex items-center gap-1.5">
                     <Layout className="w-3.5 h-3.5" /> HTML Templates
                   </h3>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {results.templates.map((t) => (
                       <div
                         key={t.id}
                         onClick={() => navigateTo(`/templates/${t.slug}`)}
-                        className="p-3 rounded-lg bg-navy/40 hover:bg-navy border border-transparent hover:border-gold/10 cursor-pointer flex justify-between items-center transition-all group"
+                        className="p-3.5 rounded-xl bg-slate-50 hover:bg-gold/5 border border-navy-slate/5 hover:border-gold/15 cursor-pointer flex justify-between items-center transition-all group"
                       >
                         <div>
-                          <span className="text-sm font-semibold text-light-gray group-hover:text-gold transition-colors">{t.name}</span>
-                          <span className="text-xs text-navy-slate block">{t.industry} ({t.technology})</span>
+                          <span className="text-sm font-bold text-navy group-hover:text-gold transition-colors">{t.name}</span>
+                          <span className="text-xs text-navy-slate block mt-0.5">{t.industry} ({t.technology})</span>
                         </div>
-                        <span className="text-xs px-2 py-0.5 rounded bg-gold/10 text-gold text-[10px] font-bold">SEO Ready</span>
+                        <span className="text-xs px-2 py-0.5 rounded-lg bg-gold/10 text-gold text-[9px] font-black uppercase tracking-wider">SEO Ready</span>
                       </div>
                     ))}
                   </div>
@@ -179,21 +179,21 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               {/* Blogs Results */}
               {results.blogs.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2 flex items-center gap-1.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gold mb-2.5 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" /> Blog CMS Articles
                   </h3>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {results.blogs.map((b) => (
                       <div
                         key={b.id}
                         onClick={() => navigateTo(`/blog/${b.slug}`)}
-                        className="p-3 rounded-lg bg-navy/40 hover:bg-navy border border-transparent hover:border-gold/10 cursor-pointer flex justify-between items-center transition-all group"
+                        className="p-3.5 rounded-xl bg-slate-50 hover:bg-gold/5 border border-navy-slate/5 hover:border-gold/15 cursor-pointer flex justify-between items-center transition-all group"
                       >
                         <div>
-                          <span className="text-sm font-semibold text-light-gray group-hover:text-gold transition-colors">{b.title}</span>
-                          <span className="text-xs text-navy-slate block line-clamp-1">{b.excerpt}</span>
+                          <span className="text-sm font-bold text-navy group-hover:text-gold transition-colors">{b.title}</span>
+                          <span className="text-xs text-navy-slate block line-clamp-1 mt-0.5">{b.excerpt}</span>
                         </div>
-                        <span className="text-xs text-navy-slate shrink-0">{b.readingTime} min read</span>
+                        <span className="text-xs text-navy-slate shrink-0 font-bold">{b.readingTime} min read</span>
                       </div>
                     ))}
                   </div>
