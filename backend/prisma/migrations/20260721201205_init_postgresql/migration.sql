@@ -1,9 +1,10 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "googleId" TEXT,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT,
     "phone" TEXT,
     "whatsApp" TEXT,
     "profilePhoto" TEXT,
@@ -15,20 +16,25 @@ CREATE TABLE "User" (
     "country" TEXT,
     "role" TEXT NOT NULL DEFAULT 'USER',
     "leadScore" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "disabled" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ServiceCategory" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "name" TEXT NOT NULL
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "ServiceCategory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Service" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "categoryId" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "title" TEXT NOT NULL,
@@ -36,20 +42,21 @@ CREATE TABLE "Service" (
     "longDesc" TEXT,
     "features" TEXT NOT NULL,
     "timeline" TEXT NOT NULL,
-    "priceFrom" REAL NOT NULL,
-    "priceTo" REAL,
+    "priceFrom" DOUBLE PRECISION NOT NULL,
+    "priceTo" DOUBLE PRECISION,
     "featuredImage" TEXT NOT NULL,
     "techStack" TEXT NOT NULL,
     "popular" BOOLEAN NOT NULL DEFAULT false,
     "featured" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Service_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "ServiceCategory" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Template" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "category" TEXT NOT NULL,
@@ -63,85 +70,91 @@ CREATE TABLE "Template" (
     "seoReady" BOOLEAN NOT NULL DEFAULT true,
     "perfScore" INTEGER NOT NULL DEFAULT 98,
     "accessScore" INTEGER NOT NULL DEFAULT 100,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Template_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "SavedService" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "serviceId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "SavedService_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "SavedService_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "Service" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "SavedService_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "SavedTemplate" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "templateId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "SavedTemplate_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "SavedTemplate_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "Template" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "SavedTemplate_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "LeadActivity" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "action" TEXT NOT NULL,
     "details" TEXT,
-    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "LeadActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "LeadActivity_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "QuoteRequest" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "serviceName" TEXT NOT NULL,
     "templateName" TEXT,
-    "budget" REAL NOT NULL,
+    "budget" DOUBLE PRECISION NOT NULL,
     "timeline" TEXT NOT NULL,
     "requirements" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'NEW',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "QuoteRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "QuoteRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Consultation" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "preferredDate" DATETIME NOT NULL,
+    "preferredDate" TIMESTAMP(3) NOT NULL,
     "preferredTime" TEXT NOT NULL,
     "timezone" TEXT NOT NULL,
     "contactMethod" TEXT NOT NULL,
     "notes" TEXT,
     "status" TEXT NOT NULL DEFAULT 'NEW',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Consultation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Consultation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Notification" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "isRead" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Blog" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "excerpt" TEXT NOT NULL,
@@ -151,21 +164,25 @@ CREATE TABLE "Blog" (
     "category" TEXT NOT NULL,
     "readingTime" INTEGER NOT NULL,
     "views" INTEGER NOT NULL DEFAULT 0,
-    "publishedDate" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "status" TEXT NOT NULL DEFAULT 'PUBLISHED'
+    "publishedDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" TEXT NOT NULL DEFAULT 'PUBLISHED',
+
+    CONSTRAINT "Blog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "FAQ" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "question" TEXT NOT NULL,
-    "answer" TEXT NOT NULL
+    "answer" TEXT NOT NULL,
+
+    CONSTRAINT "FAQ_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Testimonial" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "clientName" TEXT NOT NULL,
     "company" TEXT NOT NULL,
     "designation" TEXT NOT NULL,
@@ -176,12 +193,14 @@ CREATE TABLE "Testimonial" (
     "projectType" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "featured" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Testimonial_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Portfolio" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "projectName" TEXT NOT NULL,
     "client" TEXT NOT NULL,
     "industry" TEXT NOT NULL,
@@ -198,26 +217,30 @@ CREATE TABLE "Portfolio" (
     "clientRole" TEXT,
     "featured" BOOLEAN NOT NULL DEFAULT false,
     "slug" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Portfolio_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Analytics" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "id" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "dailyVisitors" INTEGER NOT NULL DEFAULT 0,
     "returningVisitors" INTEGER NOT NULL DEFAULT 0,
-    "bounceRate" REAL NOT NULL DEFAULT 0,
-    "avgSession" REAL NOT NULL DEFAULT 0,
+    "bounceRate" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "avgSession" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "topServices" TEXT NOT NULL,
     "topTemplates" TEXT NOT NULL,
     "topSearches" TEXT NOT NULL,
-    "conversions" INTEGER NOT NULL DEFAULT 0
+    "conversions" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Analytics_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "WebsiteSettings" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "logo" TEXT NOT NULL,
     "favicon" TEXT NOT NULL,
     "companyName" TEXT NOT NULL,
@@ -230,24 +253,28 @@ CREATE TABLE "WebsiteSettings" (
     "footerText" TEXT NOT NULL,
     "announcementBar" TEXT NOT NULL,
     "themeColors" TEXT NOT NULL,
-    "defaultSeo" TEXT NOT NULL
+    "defaultSeo" TEXT NOT NULL,
+
+    CONSTRAINT "WebsiteSettings_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "MediaLibrary" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "folder" TEXT NOT NULL DEFAULT 'uploads',
     "tags" TEXT,
     "sizeBytes" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "MediaLibrary_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ContactRequest" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -259,18 +286,21 @@ CREATE TABLE "ContactRequest" (
     "source" TEXT NOT NULL DEFAULT 'Direct',
     "status" TEXT NOT NULL DEFAULT 'NEW',
     "notes" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "ContactRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ContactRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "AuditLog" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "user" TEXT NOT NULL,
     "ip" TEXT,
     "browser" TEXT,
     "action" TEXT NOT NULL,
-    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -299,3 +329,33 @@ CREATE UNIQUE INDEX "Blog_slug_key" ON "Blog"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Portfolio_slug_key" ON "Portfolio"("slug");
+
+-- AddForeignKey
+ALTER TABLE "Service" ADD CONSTRAINT "Service_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "ServiceCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedService" ADD CONSTRAINT "SavedService_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedService" ADD CONSTRAINT "SavedService_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "Service"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedTemplate" ADD CONSTRAINT "SavedTemplate_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedTemplate" ADD CONSTRAINT "SavedTemplate_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "Template"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LeadActivity" ADD CONSTRAINT "LeadActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QuoteRequest" ADD CONSTRAINT "QuoteRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Consultation" ADD CONSTRAINT "Consultation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ContactRequest" ADD CONSTRAINT "ContactRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
